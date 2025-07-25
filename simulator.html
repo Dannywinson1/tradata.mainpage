@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tradata - Data Trading Simulator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'tradata-blue': '#1a365d',
+                        'tradata-dark': '#0f172a',
+                        'tradata-green': '#10b981',
+                        'tradata-red': '#ef4444',
+                        'tradata-gray': '#1e293b'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0f172a;
+            color: #e2e8f0;
+        }
+        .market-flash {
+            animation: flash 0.5s ease-in-out;
+        }
+        @keyframes flash {
+            0% { background-color: #1e293b; }
+            50% { background-color: #334155; }
+            100% { background-color: #1e293b; }
+        }
+        .price-up {
+            color: #10b981;
+        }
+        .price-down {
+            color: #ef4444;
+        }
+        .order-book-row:hover {
+            background-color: #1e293b;
+        }
+        .contract-card {
+            transition: all 0.3s ease;
+        }
+        .contract-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+        }
+        .glow {
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.5);
+        }
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(59, 130, 246, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); }
+        }
+    </style>
+</head>
+<body class="bg-tradata-dark min-h-screen">
+    <!-- Header -->
+    <header class="bg-tradata-blue border-b border-gray-700 sticky top-0 z-50">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center space-x-2">
+                <h1 class="text-2xl font-bold text-white">Tradata</h1>
+                <span class="text-xs bg-blue-800 text-blue-200 px-2 py-1 rounded">SIMULATOR</span>
+            </div>
+            <div class="flex items-center space-x-4">
+                <div class="hidden md:flex items-center space-x-2 bg-tradata-gray px-3 py-1 rounded-lg">
+                    <span class="text-sm">Balance:</span>
+                    <span class="font-bold text-green-400">$10,000.00</span>
+                </div>
+                <button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center">
+                    <i class="fas fa-user mr-2"></i> Demo Account
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-6">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- Left Column - Contracts -->
+            <div class="lg:col-span-1 space-y-6">
+                <!-- Market Conditions -->
+                <div class="bg-tradata-gray rounded-xl p-4 border border-gray-700">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-lg font-bold">Market Conditions</h2>
+                        <span class="text-xs bg-yellow-500 text-yellow-900 px-2 py-1 rounded">BULL MARKET</span>
+                    </div>
+                    <div class="space-y-3">
+                        <div class="flex justify-between">
+                            <span>Market Sentiment</span>
+                            <span class="text-green-400">Optimistic</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>Volatility</span>
+                            <span>Moderate</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>Trading Volume</span>
+                            <span class="text-green-400">High</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Contracts -->
+                <div class="space-y-4">
+                    <h2 class="text-xl font-bold">Data Contracts</h2>
+                    
+                    <!-- TRAD Contract -->
+                    <div class="contract-card bg-tradata-gray rounded-xl p-4 border border-gray-700 cursor-pointer" onclick="showContractDetails('TRAD')">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <h3 class="font-bold text-lg">TRAD Technographic</h3>
+                                <p class="text-sm text-gray-400">Technology adoption dataset</p>
+                            </div>
+                            <span class="bg-blue-900 text-blue-200 text-xs px-2 py-1 rounded">FUTURES</span>
+                        </div>
+                        <div class="mt-3 flex justify-between items-center">
+                            <div>
+                                <div class="text-sm text-gray-400">Bid/Ask</div>
+                                <div class="flex space-x-2">
+                                    <span class="font-bold text-red-400">175.91</span>
+                                    <span>/</span>
+                                    <span class="font-bold text-green-400">177.29</span>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-sm text-gray-400">Change</div>
+                                <div class="font-bold text-green-400">+2.15%</div>
+                            </div>
+                        </div>
+                        <div class="mt-4 flex space-x-2">
+                            <button class="flex-1 bg-red-600 hover:bg-red-700 py-2 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-arrow-down mr-1"></i> Sell
+                            </button>
+                            <button class="flex-1 bg-green-600 hover:bg-green-700 py-2 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-arrow-up mr-1"></i> Buy
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- AAPL Contract -->
+                    <div class="contract-card bg-tradata-gray rounded-xl p-4 border border-gray-700">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <h3 class="font-bold text-lg">AAPL Mobile Data</h3>
+                                <p class="text-sm text-gray-400">Mobile usage analytics</p>
+                            </div>
+                            <span class="bg-blue-900 text-blue-200 text-xs px-2 py-1 rounded">FUTURES</span>
+                        </div>
+                        <div class="mt-3 flex justify-between items-center">
+                            <div>
+                                <div class="text-sm text-gray-400">Bid/Ask</div>
+                                <div class="flex space-x-2">
+                                    <span class="font-bold text-red-400">289.45</span>
+                                    <span>/</span>
+                                    <span class="font-bold text-green-400">291.12</span>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-sm text-gray-400">Change</div>
+                                <div class="font-bold text-red-400">-0.78%</div>
+                            </div>
+                        </div>
+                        <div class="mt-4 flex space-x-2">
+                            <button class="flex-1 bg-red-600 hover:bg-red-700 py-2 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-arrow-down mr-1"></i> Sell
+                            </button>
+                            <button class="flex-1 bg-green-600 hover:bg-green-700 py-2 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-arrow-up mr-1"></i> Buy
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- AMZN Contract -->
+                    <div class="contract-card bg-tradata-gray rounded-xl p-4 border border-gray-700">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <h3 class="font-bold text-lg">AMZN Sellers Data</h3>
+                                <p class="text-sm text-gray-400">E-commerce seller metrics</p>
+                            </div>
+                            <span class="bg-blue-900 text-blue-200 text-xs px-2 py-1 rounded">FUTURES</span>
+                        </div>
+                        <div class="mt-3 flex justify-between items-center">
+                            <div>
+                                <div class="text-sm text-gray-400">Bid/Ask</div>
+                                <div class="flex space-x-2">
+                                    <span class="font-bold text-red-400">342.78</span>
+                                    <span>/</span>
+                                    <span class="font-bold text-green-400">345.21</span>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-sm text-gray-400">Change</div>
+                                <div class="font-bold text-green-400">+1.32%</div>
+                            </div>
+                        </div>
+                        <div class="mt-4 flex space-x-2">
+                            <button class="flex-1 bg-red-600 hover:bg-red-700 py-2 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-arrow-down mr-1"></i> Sell
+                            </button>
+                            <button class="flex-1 bg-green-600 hover:bg-green-700 py-2 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-arrow-up mr-1"></i> Buy
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Center Column - Order Book -->
+            <div class="lg:col-span-1">
+                <div class="bg-tradata-gray rounded-xl p-4 border border-gray-700 h-full">
+                    <h2 class="text-xl font-bold mb-4">Order Book - TRAD Technographic</h2>
+                    
+                    <div class="grid grid-cols-2 gap-4 mb-4">
+                        <div class="bg-red-900/30 rounded-lg p-3">
+                            <h3 class="font-bold text-red-400 mb-2">Bids</h3>
+                            <div class="space-y-2">
+                                <div class="flex justify-between text-sm">
+                                    <span>175.91</span>
+                                    <span>120</span>
+                                </div>
+                                <div class="flex justify-between text-sm">
+                                    <span>175.85</span>
+                                    <span>85</span>
+                                </div>
+                                <div class="flex justify-between text-sm">
+                                    <span>175.79</span>
+                                    <span>210</span>
+                                </div>
+                                <div class="flex justify-between text-sm">
+                                    <span>175.72</span>
+                                    <span>95</span>
+                                </div>
+                                <div class="flex justify-between text-sm">
+                                    <span>175.65</span>
+                                    <span>150</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-green-900/30 rounded-lg p-3">
+                            <h3 class="font-bold text-green-400 mb-2">Asks</h3>
+                            <div class="space-y-2">
+                                <div class="flex justify-between text-sm">
+                                    <span>177.29</span>
+                                    <span>95</span>
+                                </div>
+                                <div class="flex justify-between text-sm">
+                                    <span>177.35</span>
+                                    <span>180</span>
+                                </div>
+                                <div class="flex justify-between text-sm">
+                                    <span>177.41</span>
+                                    <span>75</span>
+                                </div>
+                                <div class="flex justify-between text-sm">
+                                    <span>177.47</span>
+                                    <span>140</span>
+                                </div>
+                                <div class="flex justify-between text-sm">
+                                    <span>177.53</span>
+                                    <span>110</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-tradata-dark rounded-lg p-4 mb-4">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-gray-400">Last Price</span>
+                            <span class="font-bold text-xl">176.60</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-400">Change</span>
+                            <span class="font-bold text-green-400">+2.15% (+3.72)</span>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-tradata-dark rounded-lg p-4">
+                        <h3 class="font-bold mb-3">Market Order</h3>
+                        <div class="grid grid-cols-2 gap-3 mb-4">
+                            <div>
+                                <label class="block text-sm text-gray-400 mb-1">Quantity</label>
+                                <input type="number" value="1" min="1" class="w-full bg-tradata-gray border border-gray-700 rounded-lg px-3 py-2">
+                            </div>
+                            <div>
+                                <label class="block text-sm text-gray-400 mb-1">Contract Value</label>
+                                <div class="w-full bg-tradata-gray border border-gray-700 rounded-lg px-3 py-2">$176.60</div>
+                            </div>
+                        </div>
+                        <div class="flex space-x-3">
+                            <button class="flex-1 bg-red-600 hover:bg-red-700 py-3 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-arrow-down mr-2"></i> Sell Market
+                            </button>
+                            <button class="flex-1 bg-green-600 hover:bg-green-700 py-3 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-arrow-up mr-2"></i> Buy Market
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column - Positions & News -->
+            <div class="lg:col-span-1 space-y-6">
+                <!-- Positions -->
+                <div class="bg-tradata-gray rounded-xl p-4 border border-gray-700">
+                    <h2 class="text-xl font-bold mb-4">Your Positions</h2>
+                    <div class="space-y-3">
+                        <div class="flex justify-between items-center p-3 bg-tradata-dark rounded-lg">
+                            <div>
+                                <div class="font-bold">TRAD Technographic</div>
+                                <div class="text-sm text-gray-400">1 contract</div>
+                            </div>
+                            <div class="text-right">
+                                <div class="font-bold text-green-400">+$372.00</div>
+                                <div class="text-sm">176.60</div>
+                            </div>
+                        </div>
+                        <div class="flex justify-between items-center p-3 bg-tradata-dark rounded-lg">
+                            <div>
+                                <div class="font-bold">AMZN Sellers Data</div>
+                                <div class="text-sm text-gray-400">2 contracts</div>
+                            </div>
+                            <div class="text-right">
+                                <div class="font-bold text-green-400">+$89.10</div>
+                                <div class="text-sm">345.21</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-4 pt-3 border-t border-gray-700 flex justify-between">
+                        <span>Total P/L:</span>
+                        <span class="font-bold text-green-400">+$461.10</span>
+                    </div>
+                </div>
+                
+                <!-- Market News -->
+                <div class="bg-tradata-gray rounded-xl p-4 border border-gray-700">
+                    <h2 class="text-xl font-bold mb-4">Market News</h2>
+                    <div class="space-y-4">
+                        <div class="p-3 bg-tradata-dark rounded-lg border-l-4 border-blue-500">
+                            <div class="flex justify-between">
+                                <span class="font-bold">Tech Sector Outlook</span>
+                                <span class="text-xs text-gray-400">10:45 AM</span>
+                            </div>
+                            <p class="text-sm mt-2">Analysts predict continued growth in tech adoption datasets as remote work trends persist.</p>
+                        </div>
+                        <div class="p-3 bg-tradata-dark rounded-lg border-l-4 border-yellow-500">
+                            <div class="flex justify-between">
+                                <span class="font-bold">Regulatory Update</span>
+                                <span class="text-xs text-gray-400">09:30 AM</span>
+                            </div>
+                            <p class="text-sm mt-2">New data privacy regulations may impact trading volumes in consumer datasets.</p>
+                        </div>
+                        <div class="p-3 bg-tradata-dark rounded-lg border-l-4 border-green-500">
+                            <div class="flex justify-between">
+                                <span class="font-bold">Earnings Report</span>
+                                <span class="text-xs text-gray-400">Yesterday</span>
+                            </div>
+                            <p class="text-sm mt-2">TRAD Corp reports strong Q3 earnings, driving futures up 2.15% today.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Risk Management -->
+                <div class="bg-tradata-gray rounded-xl p-4 border border-gray-700">
+                    <h2 class="text-xl font-bold mb-4">Risk Management</h2>
+                    <div class="space-y-3">
+                        <div class="flex justify-between">
+                            <span>Margin Used</span>
+                            <span>$1,766.00 (17.66%)</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>Available Margin</span>
+                            <span class="text-green-400">$8,234.00</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>Position Limit</span>
+                            <span>3/5 contracts</span>
+                        </div>
+                    </div>
+                    <div class="mt-4">
+                        <div class="w-full bg-gray-700 rounded-full h-2">
+                            <div class="bg-blue-600 h-2 rounded-full" style="width: 17.66%"></div>
+                        </div>
+                        <div class="text-xs text-gray-400 mt-1">Margin usage</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Tutorial Section -->
+        <div class="mt-8 bg-tradata-gray rounded-xl p-6 border border-gray-700">
+            <h2 class="text-2xl font-bold mb-4">Welcome to Tradata Simulator</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="p-4 bg-tradata-dark rounded-lg">
+                    <div class="text-blue-400 text-2xl mb-2"><i class="fas fa-book"></i></div>
+                    <h3 class="font-bold text-lg mb-2">Learn Data Trading</h3>
+                    <p class="text-gray-400 text-sm">Trade simulated data contracts like TRAD, AAPL, and AMZN datasets in a risk-free environment.</p>
+                </div>
+                <div class="p-4 bg-tradata-dark rounded-lg">
+                    <div class="text-green-400 text-2xl mb-2"><i class="fas fa-chart-line"></i></div>
+                    <h3 class="font-bold text-lg mb-2">Market Simulation</h3>
+                    <p class="text-gray-400 text-sm">Experience realistic market conditions with bid/ask prices, order books, and market news.</p>
+                </div>
+                <div class="p-4 bg-tradata-dark rounded-lg">
+                    <div class="text-yellow-400 text-2xl mb-2"><i class="fas fa-trophy"></i></div>
+                    <h3 class="font-bold text-lg mb-2">Track Performance</h3>
+                    <p class="text-gray-400 text-sm">Monitor your profit/loss, positions, and risk metrics to improve your trading skills.</p>
+                </div>
+            </div>
+            <div class="mt-6 flex justify-center">
+                <button class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-bold flex items-center">
+                    <i class="fas fa-play-circle mr-2"></i> Start Trading
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-gray-800 mt-8 py-6">
+        <div class="container mx-auto px-4 text-center text-gray-500 text-sm">
+            <p>Tradata Data Trading Simulator - For educational purposes only. Not a real trading platform.</p>
+            <p class="mt-2">© 2025 Tradata. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Simulate price changes
+        setInterval(() => {
+            // Get all price elements
+            const prices = document.querySelectorAll('.contract-card .font-bold');
+            
+            prices.forEach(price => {
+                // Skip the last price in the order book
+                if (price.closest('.bg-tradata-dark')) return;
+                
+                // Get current price
+                const currentPrice = parseFloat(price.textContent);
+                
+                // Generate random change (-0.5% to +0.5%)
+                const changePercent = (Math.random() - 0.5) * 0.01;
+                const newPrice = currentPrice * (1 + changePercent);
+                
+                // Update price with animation
+                price.textContent = newPrice.toFixed(2);
+                
+                // Add color based on change
+                if (changePercent > 0) {
+                    price.classList.add('text-green-400');
+                    price.classList.remove('text-red-400');
+                } else {
+                    price.classList.add('text-red-400');
+                    price.classList.remove('text-green-400');
+                }
+                
+                // Add flash effect
+                price.closest('.contract-card').classList.add('market-flash');
+                setTimeout(() => {
+                    price.closest('.contract-card').classList.remove('market-flash');
+                }, 500);
+            });
+            
+            // Update order book prices
+            updateOrderBook();
+        }, 3000);
+        
+        function updateOrderBook() {
+            // Get bid prices
+            const bids = document.querySelectorAll('.bg-red-900\\/30 .flex.justify-between span:first-child');
+            // Get ask prices
+            const asks = document.querySelectorAll('.bg-green-900\\/30 .flex.justify-between span:first-child');
+            
+            // Update bids (decrease slightly)
+            bids.forEach((bid, index) => {
+                const currentBid = parseFloat(bid.textContent);
+                const newBid = currentBid - (Math.random() * 0.1);
+                bid.textContent = newBid.toFixed(2);
+            });
+            
+            // Update asks (increase slightly)
+            asks.forEach((ask, index) => {
+                const currentAsk = parseFloat(ask.textContent);
+                const newAsk = currentAsk + (Math.random() * 0.1);
+                ask.textContent = newAsk.toFixed(2);
+            });
+        }
+        
+        // Simulate news updates
+        setInterval(() => {
+            const newsItems = document.querySelectorAll('.border-l-4');
+            const randomIndex = Math.floor(Math.random() * newsItems.length);
+            
+            newsItems[randomIndex].classList.add('pulse');
+            setTimeout(() => {
+                newsItems[randomIndex].classList.remove('pulse');
+            }, 2000);
+        }, 10000);
+        
+        // Add click handlers for buy/sell buttons
+        document.querySelectorAll('.contract-card button').forEach(button => {
+            button.addEventListener('click', function() {
+                const contractName = this.closest('.contract-card').querySelector('h3').textContent;
+                const action = this.textContent.includes('Buy') ? 'BUY' : 'SELL';
+                const price = this.closest('.contract-card').querySelector('.text-green-400').textContent;
+                
+                // Show confirmation
+                alert(`${action} order placed for ${contractName} at ${price}`);
+                
+                // Add to positions
+                const positionsContainer = document.querySelector('.bg-tradata-gray:nth-child(1)');
+                const newPosition = document.createElement('div');
+                newPosition.className = 'flex justify-between items-center p-3 bg-tradata-dark rounded-lg mt-3';
+                newPosition.innerHTML = `
+                    <div>
+                        <div class="font-bold">${contractName}</div>
+                        <div class="text-sm text-gray-400">1 contract</div>
+                    </div>
+                    <div class="text-right">
+                        <div class="font-bold ${action === 'BUY' ? 'text-green-400' : 'text-red-400'}">$${(Math.random() * 100).toFixed(2)}</div>
+                        <div class="text-sm">${price}</div>
+                    </div>
+                `;
+                positionsContainer.appendChild(newPosition);
+            });
+        });
+    </script>
+</body>
+</html>
