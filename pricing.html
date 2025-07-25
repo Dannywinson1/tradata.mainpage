@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tradata Exchange | Pricing</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        // Authentication function
+        function authenticate() {
+            const username = "demo@tradata.com";
+            const password = "Tr@dat@2025";
+            const enteredUsername = prompt("Enter your username:");
+            const enteredPassword = prompt("Enter your password:");
+            
+            if (enteredUsername === username && enteredPassword === password) {
+                alert("Authentication successful! Redirecting to dashboard...");
+                window.open('dashboard.html', '_blank');
+            } else {
+                alert("Invalid credentials. Please try again.");
+            }
+        }
+
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#2563eb',
+                        secondary: '#1e40af',
+                        accent: '#3b82f6',
+                        dark: '#1e293b',
+                        light: '#f8fafc',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .gradient-bg {
+            background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0 flex items-center">
+                        <img src="tradata-logo.png" alt="Tradata Logo" class="h-10 w-auto">
+                    </div>
+                    <div class="hidden sm:ml-6 sm:flex sm:space-x-8">
+                        <a href="index.html" target="_blank" class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">Markets</a>
+                        <a href="products.html" target="_blank" class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">Products</a>
+                        <a href="pricing.html" target="_blank" class="border-primary text-dark inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">Pricing</a>
+                        <a href="resources.html" target="_blank" class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">Resources</a>
+                    </div>
+                </div>
+                <div class="hidden sm:ml-6 sm:flex sm:items-center">
+                    <button onclick="window.open('signin.html','_blank')" class="bg-primary hover:bg-secondary text-white px-4 py-2 rounded-md text-sm font-medium">Sign In</button>
+                    <button onclick="window.open('register.html','_blank')" class="ml-4 bg-white border border-primary text-primary hover:bg-gray-50 px-4 py-2 rounded-md text-sm font-medium">Register</button>
+                </div>
+                <div class="-mr-2 flex items-center sm:hidden">
+                    <button type="button" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary" aria-controls="mobile-menu" aria-expanded="false" onclick="authenticate()">
+                        <span class="sr-only">Open main menu</span>
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <div class="gradient-bg text-white">
+        <div class="max-w-7xl mx-auto py-16 px-4 sm:py-24 sm:px-6 lg:px-8">
+            <div class="text-center">
+                <h1 class="text-4xl font-extrabold tracking-tight sm:text-5xl lg:text-6xl">Pricing Plans</h1>
+                <p class="mt-6 max-w-lg mx-auto text-xl">Affordable plans to suit your data trading needs.</p>
+                <div class="mt-10">
+                    <a href="#plans" class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-primary bg-white hover:bg-gray-50">View Plans</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pricing Section -->
+    <div id="plans" class="max-w-7xl mx-auto px-4 py-12 sm:px-6 lg:px-8">
+        <div class="text-center mb-12">
+            <h2 class="text-3xl font-extrabold text-dark">Our Pricing</h2>
+            <p class="mt-4 max-w-2xl text-xl text-gray-500 mx-auto">Choose a plan that fits your trading volume and requirements.</p>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <h3 class="text-lg font-medium text-dark">Basic</h3>
+                <p class="mt-2 text-gray-500">$99/month</p>
+                <ul class="mt-4 space-y-2 text-gray-600">
+                    <li>10 GB Data Limit</li>
+                    <li>Basic Analytics</li>
+                    <li>Email Support</li>
+                </ul>
+            </div>
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <h3 class="text-lg font-medium text-dark">Pro</h3>
+                <p class="mt-2 text-gray-500">$249/month</p>
+                <ul class="mt-4 space-y-2 text-gray-600">
+                    <li>50 GB Data Limit</li>
+                    <li>Advanced Analytics</li>
+                    <li>Priority Support</li>
+                </ul>
+            </div>
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <h3 class="text-lg font-medium text-dark">Enterprise</h3>
+                <p class="mt-2 text-gray-500">Custom</p>
+                <ul class="mt-4 space-y-2 text-gray-600">
+                    <li>Unlimited Data</li>
+                    <li>Custom Analytics</li>
+                    <li>Dedicated Support</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Simple price update simulation for the ticker (if needed in future)
+        setInterval(() => {}, 5000);
+    </script>
+</body>
+</html>

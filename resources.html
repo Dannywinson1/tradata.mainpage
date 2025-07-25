@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tradata Exchange | Markets</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        // Authentication function with wallet connection
+        function authenticate() {
+            const username = "demo@tradata.com";
+            const password = "Tr@dat@2025";
+            const enteredUsername = prompt("Enter your username:");
+            const enteredPassword = prompt("Enter your password:");
+            
+            if (enteredUsername === username && enteredPassword === password) {
+                alert("Authentication successful! Connecting to Tradata Wallet...");
+                const walletConnected = confirm("Connect Tradata Wallet? Click OK to proceed.");
+                if (walletConnected) {
+                    alert("Wallet connected! Redirecting to dashboard...");
+                    window.open('dashboard.html', '_blank');
+                } else {
+                    alert("Wallet connection cancelled. Please try again.");
+                }
+            } else {
+                alert("Invalid credentials. Please try again.");
+            }
+        }
+
+        // Mock contract for a single data future contract
+        function showContract(contractId) {
+            let contractContent;
+            if (contractId === "contract1") {
+                contractContent = `
+                    **Data Future Contract - Consumer Behavior Index (Q3 2025)**  
+                    - **Contract Symbol**: CDI-Q3-2025  
+                    - **Underlying Asset**: Consumer Behavior Data  
+                    - **Contract Size**: 10 GB of standardized consumer data  
+                    - **Delivery Date**: September 30, 2025  
+                    - **Settlement Price**: $245.50 per GB  
+                    - **Trading Unit**: 1 contract = 10 GB  
+                    - **Last Trading Day**: September 25, 2025  
+                    - **Minimum Price Fluctuation**: $0.01 per GB  
+                    - **Position Limits**: 5,000 contracts  
+                    - **Exchange**: Tradata Exchange  
+                    - **Terms**: Data delivered in CSV format, quality assured by Tradata standards.  
+                `;
+            }
+            alert(contractContent);
+        }
+
+        // Mock contracts for multiple data future contracts
+        function showAllContracts() {
+            const allContracts = `
+                **Data Future Contracts - Various Companies and Quarters**  
+                1. **Consumer Behavior Index (Q3 2025)**  
+                   - **Company**: DataCo  
+                   - **Symbol**: CDI-Q3-2025  
+                   - **Price**: $245.50/GB  
+                   - **Delivery**: September 30, 2025  
+                   - **Size**: 10 GB  
+
+                2. **Healthcare Analytics (Q4 2025)**  
+                   - **Company**: Analytix  
+                   - **Symbol**: HEA-Q4-2025  
+                   - **Price**: $178.25/GB  
+                   - **Delivery**: December 31, 2025  
+                   - **Size**: 15 GB  
+
+                3. **Financial Sentiment (Q1 2026)**  
+                   - **Company**: InfoSphere  
+                   - **Symbol**: FIN-Q1-2026  
+                   - **Price**: $312.75/GB  
+                   - **Delivery**: March 31, 2026  
+                   - **Size**: 20 GB  
+
+                4. **Retail Foot Traffic (Q2 2026)**  
+                   - **Company**: QuantData  
+                   - **Symbol**: RFT-Q2-2026  
+                   - **Price**: $156.30/GB  
+                   - **Delivery**: June 30, 2026  
+                   - **Size**: 12 GB  
+
+                5. **AI Training Sets (Q3 2026)**  
+                   - **Company**: StatWise  
+                   - **Symbol**: AIT-Q3-2026  
+                   - **Price**: $289.40/GB  
+                   - **Delivery**: September 30, 2026  
+                   - **Size**: 25 GB  
+            `;
+            alert(allContracts);
+        }
+
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#2563eb',
+                        secondary: '#1e40af',
+                        accent: '#3b82f6',
+                        dark: '#1e293b',
+                        light: '#f8fafc',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .gradient-bg {
+            background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+        }
+        
+        .data-card {
+            transition: all 0.3s ease;
+            border-left: 4px solid #2563eb;
+        }
+        
+        .data-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+        
+        .market-ticker {
+            animation: scroll 30s linear infinite;
+        }
+        
+        @keyframes scroll {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+        
+        .price-up {
+            color: #10b981;
+        }
+        
+        .price-down {
+            color: #ef4444;
+        }
+        
+        /* Mock K-line chart styling */
+        .k-line-chart {
+            background: linear-gradient(to bottom, #2d3748, #4a5568);
+            height: 200px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .k-line-candle {
+            position: absolute;
+            width: 2px;
+            background: #48bb78;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <span class="text-xl font-bold text-dark">Tradata</span>
+                    </div>
+                    <div class="hidden sm:ml-6 sm:flex sm:space-x-8">
+                        <a href="index.html" target="_blank" class="border-primary text-dark inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">Markets</a>
+                        <a href="products.html" target="_blank" class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">Products</a>
+                        <a href="pricing.html" target="_blank" class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">Pricing</a>
+                        <a href="resources.html" target="_blank" class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">Resources</a>
+                    </div>
+                </div>
+                <div class="hidden sm:ml-6 sm:flex sm:items-center">
+                    <button onclick="authenticate()" class="bg-primary hover:bg-secondary text-white px-4 py-2 rounded-md text-sm font-medium">Sign In</button>
+                    <button onclick="window.open('register.html','_blank')" class="ml-4 bg-white border border-primary text-primary hover:bg-gray-50 px-4 py-2 rounded-md text-sm font-medium">Register</button>
+                </div>
+                <div class="-mr-2 flex items-center sm:hidden">
+                    <button type="button" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary" aria-controls="mobile-menu" aria-expanded="false" onclick="authenticate()">
+                        <span class="sr-only">Open main menu</span>
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <div class="gradient-bg text-white">
+        <div class="max-w-7xl mx-auto py-16 px-4 sm:py-24 sm:px-6 lg:px-8">
+            <div class="text-center">
+                <h1 class="text-4xl font-extrabold tracking-tight sm:text-5xl lg:text-6xl">
+                    Trade Data as Commodities
+                </h1>
+                <p class="mt-6 max-w-lg mx-auto text-xl">
+                    The world's premier exchange for data assets. Hedge risks, discover prices, and trade data contracts with standardized terms.
+                </p>
+                <div class="mt-10">
+                    <a href="#" onclick="authenticate()" class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-primary bg-white hover:bg-gray-50">
+                        Start Trading
+                        <i class="fas fa-arrow-right ml-2"></i>
+                    </a>
+                    <a href="learn.html" target="_blank" class="ml-4 inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-primary bg-opacity-20 hover:bg-opacity-30">
+                        Learn More
+                    </a>
+                    <div class="mt-4">
+                        <a href="mailto:danny.tang@dansonstatistical.com" class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-primary bg-opacity-20 hover:bg-opacity-30">
+                            Contact Sales
+                        </a>
+                    </div>
+                    <div class="mt-4">
+                        <a href="#" onclick="authenticate()" class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-primary bg-white hover:bg-gray-50">
+                            Get Started
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Market Ticker -->
+    <div class="bg-dark text-white overflow-hidden">
+        <div class="max-w-7xl mx-auto px-4 py-3 sm:px-6 lg:px-8">
+            <div class="flex items-center">
+                <span class="font-bold mr-4">LIVE MARKETS:</span>
+                <div class="flex-1 overflow-hidden">
+                    <div class="whitespace-nowrap market-ticker">
+                        <span class="inline-block mr-8">Consumer Data Index <span class="price-up">↑ 1.2%</span> 245.50</span>
+                        <span class="inline-block mr-8">Healthcare Analytics <span class="price-down">↓ 0.8%</span> 178.25</span>
+                        <span class="inline-block mr-8">Financial Sentiment <span class="price-up">↑ 2.4%</span> 312.75</span>
+                        <span class="inline-block mr-8">Retail Foot Traffic <span class="price-up">↑ 0.5%</span> 156.30</span>
+                        <span class="inline-block mr-8">AI Training Sets <span class="price-down">↓ 1.1%</span> 289.40</span>
+                        <span class="inline-block mr-8">Geo-Location Data <span class="price-up">↑ 3.2%</span> 201.80</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Featured Data Contracts -->
+    <div class="max-w-7xl mx-auto px-4 py-12 sm:px-6 lg:px-8">
+        <div class="text-center mb-12">
+            <h2 class="text-3xl font-extrabold text-dark">Tradata Featured Contracts</h2>
+            <p class="mt-4 max-w-2xl text-xl text-gray-500 mx-auto">
+                Trade standardized data futures contracts with transparent pricing and settlement
+            </p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Contract 1 -->
+            <div class="data-card bg-white rounded-lg shadow-md overflow-hidden">
+                <div class="p-6">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0 bg-blue-100 p-3 rounded-full">
+                            <i class="fas fa-shopping-cart text-primary text-xl"></i>
+                        </div>
+                        <div class="ml-4">
+                            <h3 class="text-lg font-medium text-dark">Consumer Behavior Index</h3>
+                            <p class="text-gray-500">Q3 2025 Delivery</p>
+                        </div>
+                    </div>
+                    <div class="mt-6">
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-500">Current Price</span>
+                            <span class="text-xl font-bold">$245.50</span>
+                        </div>
+                        <div class="flex justify-between items-center mt-2">
+                            <span class="text-gray-500">Daily Change</span>
+                            <span class="text-green-500 font-medium">+1.2%</span>
+                        </div>
+                        <div class="flex justify-between items-center mt-2">
+                            <span class="text-gray-500">Open Interest</span>
+                            <span class="font-medium">12,450</span>
+                        </div>
+                    </div>
+                    <div class="mt-6">
+                        <button onclick="showContract('contract1')" class="w-full bg-primary hover:bg-secondary text-white py-2 px-4 rounded-md">
+                            View Contract
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Contract 2 -->
+            <div class="data-card bg-white rounded-lg shadow-md overflow-hidden">
+                <div class="p-6">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0 bg-green-100 p-3 rounded-full">
+                            <i class="fas fa-heartbeat text-green-500 text-xl"></i>
+                        </div>
+                        <div class="ml-4">
+                            <h3 class="text-lg font-medium text-dark">Healthcare Analytics</h3>
+                            <p class="text-gray-500">Q4 2025 Delivery</p>
+                        </div>
+                    </div>
+                    <div class="mt-6">
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-500">Current Price</span>
+                            <span class="text-xl font-bold">$178.25</span>
+                        </div>
+                        <div class="flex justify-between items-center mt-2">
+                            <span class="text-gray-500">Daily Change</span>
+                            <span class="text-red-500 font-medium">-0.8%</span>
+                        </div>
+                        <div class="flex justify-between items-center mt-2">
+                            <span class="text-gray-500">Open Interest</span>
+                            <span class="font-medium">8,720</span>
+                        </div>
+                    </div>
+                    <div class="mt-6">
+                        <button onclick="showContract('contract1')" class="w-full bg-primary hover:bg-secondary text-white py-2 px-4 rounded-md">
+                            View Contract
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Contract 3 -->
+            <div class="data-card bg-white rounded-lg shadow-md overflow-hidden">
+                <div class="p-6">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0 bg-purple-100 p-3 rounded-full">
+                            <i class="fas fa-chart-line text-purple-500 text-xl"></i>
+                        </div>
+                        <div class="ml-4">
+                            <h3 class="text-lg font-medium text-dark">Financial Sentiment</h3>
+                            <p class="text-gray-500">Monthly Rolling</p>
+                        </div>
+                    </div>
+                    <div class="mt-6">
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-500">Current Price</span>
+                            <span class="text-xl font-bold">$312.75</span>
+                        </div>
+                        <div class="flex justify-between items-center mt-2">
+                            <span class="text-gray-500">Daily Change</span>
+                            <span class="text-green-500 font-medium">+2.4%</span>
+                        </div>
+                        <div class="flex justify-between items-center mt-2">
+                            <span class="text-gray-500">Open Interest</span>
+                            <span class="font-medium">15,320</span>
+                        </div>
+                    </div>
+                    <div class="mt-6">
+                        <button onclick="showContract('contract1')" class="w-full bg-primary hover:bg-secondary text-white py-2 px-4 rounded-md">
+                            View Contract
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="mt-10 text-center">
+            <a href="#" onclick="showAllContracts()" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-primary hover:bg-secondary">
+                View All Contracts
+                <i class="fas fa-chevron-right ml-2"></i>
+            </a>
+        </div>
+    </div>
+
+    <!-- How It Works -->
+    <div class="bg-gray-100 py-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-extrabold text-dark">How Data Futures Work</h2>
+                <p class="mt-4 max-w-2xl text-xl text-gray-500 mx-auto">
+                    Standardized contracts for trading data as a commodity
+                </p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="bg-white p-6 rounded-lg shadow-sm">
+                    <div class="flex items-center justify-center h-12 w-12 rounded-md bg-blue-100 text-primary">
+                        <i class="fas fa-search-dollar text-xl"></i>
+                    </div>
+                    <h3 class="mt-6 text-lg font-medium text-dark">Price Discovery</h3>
+                    <p class="mt-2 text-gray-500">
+                        Transparent markets establish fair prices for data assets based on supply and demand dynamics.
+                    </p>
+                </div>
+                
+                <div class="bg-white p-6 rounded-lg shadow-sm">
+                    <div class="flex items-center justify-center h-12 w-12 rounded-md bg-green-100 text-green-500">
+                        <i class="fas fa-shield-alt text-xl"></i>
+                    </div>
+                    <h3 class="mt-6 text-lg font-medium text-dark">Risk Management</h3>
+                    <p class="mt-2 text-gray-500">
+                        Hedge against price volatility in data acquisition costs or revenue streams.
+                    </p>
+                </div>
+                
+                <div class="bg-white p-6 rounded-lg shadow-sm">
+                    <div class="flex items-center justify-center h-12 w-12 rounded-md bg-purple-100 text-purple-500">
+                        <i class="fas fa-file-contract text-xl"></i>
+                    </div>
+                    <h3 class="mt-6 text-lg font-medium text-dark">Standardized Contracts</h3>
+                    <p class="mt-2 text-gray-500">
+                        Uniform specifications for data quality, delivery timing, and settlement procedures.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Trading Platform Preview -->
+    <div class="max-w-7xl mx-auto px-4 py-16 sm:px-6 lg:px-8">
+        <div class="lg:grid lg:grid-cols-12 lg:gap-8">
+            <div class="sm:text-center md:max-w-2xl md:mx-auto lg:col-span-6 lg:text-left">
+                <h2 class="text-3xl font-extrabold text-dark sm:text-4xl">
+                    Professional Trading Platform
+                </h2>
+                <p class="mt-3 text-xl text-gray-500">
+                    Our advanced trading interface provides real-time market data, analytics, and execution tools for professional data traders.
+                </p>
+                <div class="mt-8 sm:max-w-lg sm:mx-auto lg:mx-0">
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <h4 class="text-lg font-medium text-dark">Real-time Charts</h4>
+                            <p class="mt-1 text-gray-500">
+                                Advanced technical analysis tools
+                            </p>
+                        </div>
+                        <div>
+                            <h4 class="text-lg font-medium text-dark">Order Types</h4>
+                            <p class="mt-1 text-gray-500">
+                                Limit, market, stop orders
+                            </p>
+                        </div>
+                        <div>
+                            <h4 class="text-lg font-medium text-dark">Risk Management</h4>
+                            <p class="mt-1 text-gray-500">
+                                Position monitoring tools
+                            </p>
+                        </div>
+                        <div>
+                            <h4 class="text-lg font-medium text-dark">API Access</h4>
+                            <p class="mt-1 text-gray-500">
+                                Programmatic trading
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-12 relative sm:max-w-lg sm:mx-auto lg:mt-0 lg:max-w-none lg:mx-0 lg:col-span-6">
+                <div class="relative mx-auto w-full rounded-lg shadow-lg overflow-hidden">
+                    <div class="bg-gray-800 p-4">
+                        <div class="flex space-x-2">
+                            <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                            <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+                            <div class="w-3 h-3 rounded-full bg-green-500"></div>
+                        </div>
+                    </div>
+                    <div class="bg-gray-900 p-6">
+                        <div class="flex justify-between items-center text-white mb-4">
+                            <div>
+                                <span class="text-gray-400">Symbol:</span>
+                                <span class="font-bold ml-2">CDI-Q3</span>
+                            </div>
+                            <div>
+                                <span class="text-gray-400">Last:</span>
+                                <span class="font-bold ml-2 text-green-400">245.50</span>
+                            </div>
+                        </div>
+                        <div class="k-line-chart mb-4">
+                            <!-- Mock K-line chart -->
+                            <div class="k-line-candle" style="left: 10%; top: 50%; height: 50px;"></div>
+                            <div class="k-line-candle" style="left: 20%; top: 30%; height: 70px;"></div>
+                            <div class="k-line-candle" style="left: 30%; top: 70%; height: 30px;"></div>
+                            <div class="k-line-candle" style="left: 40%; top: 40%; height: 60px;"></div>
+                            <div class="k-line-candle" style="left: 50%; top: 60%; height: 40px;"></div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="bg-gray-800 p-3 rounded-md">
+                                <div class="text-gray-400 text-sm">Bid</div>
+                                <div class="text-white font-bold">245.25</div>
+                            </div>
+                            <div class="bg-gray-800 p-3 rounded-md">
+                                <div class="text-gray-400 text-sm">Ask</div>
+                                <div class="text-white font-bold">245.75</div>
+                            </div>
+                        </div>
+                        <div class="mt-4 grid grid-cols-3 gap-2">
+                            <button onclick="authenticate()" class="bg-blue-600 hover:bg-blue-700 text-white py-2 px-3 rounded text-sm">
+                                Buy
+                            </button>
+                            <button onclick="authenticate()" class="bg-red-600 hover:bg-red-700 text-white py-2 px-3 rounded text-sm">
+                                Sell
+                            </button>
+                            <button onclick="authenticate()" class="bg-gray-700 hover:bg-gray-600 text-white py-2 px-3 rounded text-sm">
+                                Chart
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Remaining sections (Data Providers, CTA, Footer) remain unchanged -->
+    <div class="bg-gray-100 py-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-extrabold text-dark">Trusted by Tradata Partners</h2>
+                <p class="mt-4 max-w-2xl text-xl text-gray-500 mx-auto">
+                    Our exchange partners with top data providers to ensure quality and reliability
+                </p>
+            </div>
+            
+            <div class="grid grid-cols-2 gap-8 md:grid-cols-4 lg:grid-cols-5">
+                <div class="col-span-1 flex justify-center items-center">
+                    <img class="h-12 grayscale hover:grayscale-0 transition-all" src="https://via.placeholder.com/150x60?text=DataCo" alt="DataCo">
+                </div>
+                <div class="col-span-1 flex justify-center items-center">
+                    <img class="h-12 grayscale hover:grayscale-0 transition-all" src="https://via.placeholder.com/150x60?text=Analytix" alt="Analytix">
+                </div>
+                <div class="col-span-1 flex justify-center items-center">
+                    <img class="h-12 grayscale hover:grayscale-0 transition-all" src="https://via.placeholder.com/150x60?text=InfoSphere" alt="InfoSphere">
+                </div>
+                <div class="col-span-1 flex justify-center items-center">
+                    <img class="h-12 grayscale hover:grayscale-0 transition-all" src="https://via.placeholder.com/150x60?text=QuantData" alt="QuantData">
+                </div>
+                <div class="col-span-1 flex justify-center items-center">
+                    <img class="h-12 grayscale hover:grayscale-0 transition-all" src="https://via.placeholder.com/150x60?text=StatWise" alt="StatWise">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="bg-dark text-white">
+        <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
+                <div>
+                    <h3 class="text-sm font-semibold uppercase tracking-wider">Markets</h3>
+                    <ul class="mt-4 space-y-2">
+                        <li><a href="#" class="text-gray-300 hover:text-white">All Contracts</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-white">Most Active</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-white">New Listings</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-white">Expiring Soon</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-sm font-semibold uppercase tracking-wider">Resources</h3>
+                    <ul class="mt-4 space-y-2">
+                        <li><a href="#" class="text-gray-300 hover:text-white">Documentation</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-white">API Reference</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-white">Tutorials</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-white">Market Data</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-sm font-semibold uppercase tracking-wider">Company</h3>
+                    <ul class="mt-4 space-y-2">
+                        <li><a href="#" class="text-gray-300 hover:text-white">About</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-white">Careers</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-white">Press</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-white">Contact</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-sm font-semibold uppercase tracking-wider">Legal</h3>
+                    <ul class="mt-4 space-y-2">
+                        <li><a href="#" class="text-gray-300 hover:text-white">Privacy</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-white">Terms</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-white">Compliance</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-white">Regulations</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="mt-12 border-t border-gray-700 pt-8 flex flex-col md:flex-row justify-between items-center">
+                <div class="flex items-center">
+                    <span class="text-xl font-bold">Tradata</span>
+                </div>
+                <div class="mt-4 md:mt-0">
+                    <p class="text-gray-400 text-sm">
+                        © 2025 Tradata. All rights reserved.
+                    </p>
+                </div>
+                <div class="mt-4 md:mt-0 flex space-x-6">
+                    <a href="https://x.com/Tradataindubai" target="_blank" class="text-gray-400 hover:text-white">
+                        <i class="fab fa-twitter"></i>
+                    </a>
+                    <a href="https://www.linkedin.com/company/tradata1/" target="_blank" class="text-gray-400 hover:text-white">
+                        <i class="fab fa-linkedin"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Simple price update simulation for the ticker
+        function updateTickerPrices() {
+            const priceElements = document.querySelectorAll('.market-ticker span');
+            priceElements.forEach(el => {
+                const changeElement = el.querySelector('span');
+                const currentText = changeElement.textContent;
+                const isUp = currentText.includes('↑');
+                const currentValue = parseFloat(el.textContent.match(/\d+\.\d+/)[0]);
+                
+                const changePercent = (Math.random() * 2).toFixed(1);
+                const newValue = isUp 
+                    ? currentValue * (1 + changePercent/100) 
+                    : currentValue * (1 - changePercent/100);
+                const newIsUp = Math.random() > 0.3 ? isUp : !isUp;
+                
+                changeElement.textContent = newIsUp ? `↑ ${changePercent}%` : `↓ ${changePercent}%`;
+                changeElement.className = newIsUp ? 'price-up' : 'price-down';
+                el.innerHTML = el.innerHTML.replace(/\d+\.\d+/, newValue.toFixed(2));
+            });
+        }
+        
+        setInterval(updateTickerPrices, 5000);
+    </script>
+</body>
+</html>
